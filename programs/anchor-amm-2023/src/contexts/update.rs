@@ -8,6 +8,7 @@ pub struct Update<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
     #[account(
+        mut, 
         seeds = [
             b"config",
             config.seed.to_le_bytes().as_ref()
