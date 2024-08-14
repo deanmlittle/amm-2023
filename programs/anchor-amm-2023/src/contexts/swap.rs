@@ -13,6 +13,12 @@ pub struct Swap<'info> {
     pub mint_x: Box<Account<'info, Mint>>,
     pub mint_y: Box<Account<'info, Mint>>,
     #[account(
+        seeds = [b"lp", config.key().as_ref()],
+        bump = config.lp_bump
+    )]
+    pub mint_lp: Box<Account<'info, Mint>>,
+    
+    #[account(
         init_if_needed,
         payer = user,
         associated_token::mint = mint_x,
@@ -71,7 +77,7 @@ impl<'info> Swap<'info> {
         let mut curve = ConstantProduct::init(
             self.vault_x.amount,
             self.vault_y.amount,
-            self.vault_x.amount,
+            self.mint_lp.supply,
             self.config.fee,
             None
         ).map_err(AmmError::from)?;
